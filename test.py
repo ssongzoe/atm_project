@@ -9,10 +9,10 @@ class DummyDB():
         self.sample_accounts = ["12345", "67890"]
         self.sample_balance = {"12345": 1000, "67890": 500}
 
-    def insert_card(self, cardid):
+    def is_exist_card_id(self, cardid):
         return cardid == self.sample_cid
     
-    def auth_card(self, cardid, pin):
+    def auth_card(self, cardid, pin): #비밀번호
         return cardid == self.sample_cid and pin == self.sample_pin
     
     def get_accounts(self, cardid):
@@ -129,3 +129,21 @@ def test_invalid_order(sample_data):
 
     atm6 = ATM(sample_data)
     assert atm6.withdraw(100) == False
+
+def test_auth_reset(sample_data):
+    atm = ATM(sample_data)
+    assert atm.insert_card(sample_data.sample_cid) == True
+    assert atm.insert_pin(sample_data.sample_pin) == True
+    assert atm.get_accounts() == sample_data.sample_accounts
+    assert atm.select_account(sample_data.sample_accounts[0]) == True
+    assert atm.check_balance() == sample_data.sample_balance[sample_data.sample_accounts[0]]
+    assert atm.deposit(100) == True
+    assert atm.withdraw(100) == True
+  
+    # reinsert the card
+    assert atm.insert_card(sample_data.sample_cid) == True
+    assert atm.get_accounts() == False
+    assert atm.select_account(sample_data.sample_accounts[0]) == False
+    assert atm.check_balance() == False
+    assert atm.deposit(100) == False
+    assert atm.withdraw(100) == False
