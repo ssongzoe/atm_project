@@ -18,5 +18,8 @@ class ATM():
     def insert_pin(self, pin):
         raise NotImplementedError("not implemented")
     
-    def get_account(self):
+    def get_accounts(self):
+        raise NotImplementedError("not implemented")
+    
+    def select_account(self, account):
         raise NotImplementedError("not implemented")
