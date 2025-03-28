@@ -4,15 +4,37 @@ class ATM():
         self.DB = database
         self.cardid = None
         self.authorized = False
+        self.accounts = None
+        self.account = None
 
     def deposit(self, amount):
-        raise NotImplementedError("not implemented")
+        if not self.authorized:
+            return False
+        if self.accounts is None:
+            return False
+        if self.account is None:
+            return False
+        if amount <= 0:
+            return False
+        if self.DB.set_balance(self.account, amount):
+            return True
+        return False
 
     def withdraw(self, amount):
-        raise NotImplementedError("not implemented")
-    
-    def check_balance(self):
-        raise NotImplementedError("not implemented")
+        if not self.authorized:
+            return False
+        if self.accounts is None:
+            return False
+        if self.account is None:
+            return False
+        if amount <= 0:
+            return False
+        if amount > self.DB.get_balance(self.account):
+            return False
+        if self.DB.set_balance(self.account, -amount):
+            return True
+        return False
+
     
     def insert_card(self, cardid):
         self._reset()
@@ -31,10 +53,27 @@ class ATM():
         return False
 
     def get_accounts(self):
-        raise NotImplementedError("not implemented")
+        if not self.authorized:
+            return False
+        self.accounts = self.DB.get_accounts()
+        return self.accounts
     
     def select_account(self, account):
-        raise NotImplementedError("not implemented")
+        if not self.authorized:
+            return False
+        if account in self.accounts:
+            self.account = account
+            return True
+        return False
+
+    def check_balance(self):
+        if not self.authorized:
+            return False
+        if self.accounts is None:
+            return False
+        if self.account is None:
+            return False
+        return self.DB.get_balance(self.account)
     
     def _reset(self):
         self.cardid = None

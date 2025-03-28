@@ -15,14 +15,19 @@ class DummyDB():
     def auth_card(self, cardid, pin): #비밀번호
         return cardid == self.sample_cid and pin == self.sample_pin
     
-    def get_accounts(self, cardid):
+    def get_accounts(self):
         return self.sample_accounts
+    
+    def select_account(self, account):
+        return account
     
     def get_balance(self, account):
         return self.sample_balance[account]
     
     def set_balance(self, account, amount):
-        self.sample_balance[account] = amount
+        self.sample_balance[account] += amount
+        return True
+    
 
 
 @pytest.fixture
@@ -57,6 +62,7 @@ def test_valid_select_account(sample_data):
     atm = ATM(sample_data)
     assert atm.insert_card(sample_data.sample_cid) == True
     assert atm.insert_pin(sample_data.sample_pin) == True
+    assert atm.get_accounts() == sample_data.sample_accounts
     assert atm.select_account(sample_data.sample_accounts[0]) == True
     assert atm.select_account(sample_data.sample_accounts[1]) == True
 
@@ -64,12 +70,14 @@ def test_invalid_select_account(sample_data):
     atm = ATM(sample_data)
     assert atm.insert_card(sample_data.sample_cid) == True
     assert atm.insert_pin(sample_data.sample_pin) == True
+    assert atm.get_accounts() == sample_data.sample_accounts
     assert atm.select_account("00000") == False
 
 def test_check_balance(sample_data):
     atm = ATM(sample_data)
     assert atm.insert_card(sample_data.sample_cid) == True    
     assert atm.insert_pin(sample_data.sample_pin) == True
+    assert atm.get_accounts() == sample_data.sample_accounts
     assert atm.select_account(sample_data.sample_accounts[0]) == True
     assert atm.check_balance() == sample_data.sample_balance[sample_data.sample_accounts[0]]
     assert atm.select_account(sample_data.sample_accounts[1]) == True
@@ -79,6 +87,7 @@ def test_deposit(sample_data):
     atm = ATM(sample_data)
     assert atm.insert_card(sample_data.sample_cid) == True
     assert atm.insert_pin(sample_data.sample_pin) == True
+    assert atm.get_accounts() == sample_data.sample_accounts
     assert atm.select_account(sample_data.sample_accounts[0]) == True
     initial_balance = atm.check_balance()
     assert atm.deposit(100) == True
@@ -88,6 +97,7 @@ def test_invaild_deposit(sample_data):
     atm = ATM(sample_data)
     assert atm.insert_card(sample_data.sample_cid) == True
     assert atm.insert_pin(sample_data.sample_pin) == True
+    assert atm.get_accounts() == sample_data.sample_accounts
     assert atm.select_account(sample_data.sample_accounts[0]) == True
     initial_balance = atm.check_balance()
     assert atm.deposit(-100) == False
@@ -97,6 +107,7 @@ def test_withdraw(sample_data):
     atm = ATM(sample_data)
     assert atm.insert_card(sample_data.sample_cid) == True
     assert atm.insert_pin(sample_data.sample_pin) == True
+    assert atm.get_accounts() == sample_data.sample_accounts
     assert atm.select_account(sample_data.sample_accounts[0]) == True
     initial_balance = atm.check_balance()
     assert atm.withdraw(initial_balance - 100) == True
@@ -106,6 +117,7 @@ def test_invalid_withdraw(sample_data):
     atm = ATM(sample_data)
     assert atm.insert_card(sample_data.sample_cid) == True
     assert atm.insert_pin(sample_data.sample_pin) == True
+    assert atm.get_accounts() == sample_data.sample_accounts
     assert atm.select_account(sample_data.sample_accounts[0]) == True
     initial_balance = atm.check_balance()
     assert atm.withdraw(initial_balance + 100) == False
