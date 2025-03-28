@@ -35,30 +35,36 @@ def sample_data():
     return DummyDB()
 # normal scenario
 def test_insert_valid_card(sample_data):
+    # 유효한 카드 ID를 삽입할 경우
     atm = ATM(sample_data) 
     assert atm.insert_card(sample_data.sample_cid) == True
 
 def test_insert_invalid_card(sample_data):
+    # 유효하지 않은 카드 ID를 삽입 할 경우
     atm = ATM(sample_data) 
     assert atm.insert_card("0000-0000-0000-0000") == False
 
 def test_insert_valid_pin(sample_data):
+    # 유효한 PIN을 삽입할 경우
     atm = ATM(sample_data)
     assert atm.insert_card(sample_data.sample_cid) == True    
     assert atm.insert_pin(sample_data.sample_pin) == True
 
 def test_insert_invalid_pin(sample_data):
+    #유효하지 않은 PIN을 삽입할 경우
     atm = ATM(sample_data)
     assert atm.insert_card(sample_data.sample_cid) == True
     assert atm.insert_pin("1234") == False
 
 def test_get_accounts(sample_data):
+    # 계좌 목록 조회
     atm = ATM(sample_data)
     assert atm.insert_card(sample_data.sample_cid) == True    
     assert atm.insert_pin(sample_data.sample_pin) == True
     assert atm.get_accounts() == sample_data.sample_accounts
 
 def test_valid_select_account(sample_data):
+    # 계좌 선택
     atm = ATM(sample_data)
     assert atm.insert_card(sample_data.sample_cid) == True
     assert atm.insert_pin(sample_data.sample_pin) == True
@@ -67,6 +73,7 @@ def test_valid_select_account(sample_data):
     assert atm.select_account(sample_data.sample_accounts[1]) == True
 
 def test_invalid_select_account(sample_data):
+    # 유효하지 않은 계좌 선택
     atm = ATM(sample_data)
     assert atm.insert_card(sample_data.sample_cid) == True
     assert atm.insert_pin(sample_data.sample_pin) == True
@@ -74,6 +81,7 @@ def test_invalid_select_account(sample_data):
     assert atm.select_account("00000") == False
 
 def test_check_balance(sample_data):
+    # 잔액 조회
     atm = ATM(sample_data)
     assert atm.insert_card(sample_data.sample_cid) == True    
     assert atm.insert_pin(sample_data.sample_pin) == True
@@ -84,6 +92,7 @@ def test_check_balance(sample_data):
     assert atm.check_balance() == sample_data.sample_balance[sample_data.sample_accounts[1]]   
 
 def test_deposit(sample_data):
+    # 입금
     atm = ATM(sample_data)
     assert atm.insert_card(sample_data.sample_cid) == True
     assert atm.insert_pin(sample_data.sample_pin) == True
@@ -94,6 +103,7 @@ def test_deposit(sample_data):
     assert atm.check_balance() == initial_balance + 100
 
 def test_invaild_deposit(sample_data):
+    # 유효하지 않은 입금
     atm = ATM(sample_data)
     assert atm.insert_card(sample_data.sample_cid) == True
     assert atm.insert_pin(sample_data.sample_pin) == True
@@ -104,6 +114,7 @@ def test_invaild_deposit(sample_data):
     assert atm.check_balance() == initial_balance    
 
 def test_withdraw(sample_data):
+    # 출금
     atm = ATM(sample_data)
     assert atm.insert_card(sample_data.sample_cid) == True
     assert atm.insert_pin(sample_data.sample_pin) == True
@@ -114,6 +125,7 @@ def test_withdraw(sample_data):
     assert atm.check_balance() == 100
 
 def test_invalid_withdraw(sample_data):
+    # 유효하지 않은 출금
     atm = ATM(sample_data)
     assert atm.insert_card(sample_data.sample_cid) == True
     assert atm.insert_pin(sample_data.sample_pin) == True
@@ -124,6 +136,7 @@ def test_invalid_withdraw(sample_data):
     assert atm.check_balance() == initial_balance
 
 def test_invalid_order(sample_data):
+    # 비정상적인 순서로 ATM 사용
     atm1 = ATM(sample_data)
     assert atm1.insert_pin(sample_data.sample_pin) == False
 
@@ -143,6 +156,7 @@ def test_invalid_order(sample_data):
     assert atm6.withdraw(100) == False
 
 def test_auth_reset(sample_data):
+    # ATM 사용 후 카드 재삽입
     atm = ATM(sample_data)
     assert atm.insert_card(sample_data.sample_cid) == True
     assert atm.insert_pin(sample_data.sample_pin) == True
